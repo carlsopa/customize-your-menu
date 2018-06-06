@@ -1,0 +1,118 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        .ScreenAPI {
+            border: black, 1px;
+            width: 150px;
+            height: 150px;
+            position: absolute;
+        }
+        
+        #container {
+            border: greenyellow 2px;
+            width: 100%;
+            height: 95%
+        }
+        
+        #WeatherDiv {
+            background-color: rgb(237, 45, 45);
+        }
+        
+        #MenuDiv {
+            background-color: rgb(179, 168, 107);
+        }
+        
+        #PhotoDiv {
+            background-color: rgb(94, 146, 96);
+        }
+        
+        #ScrollerDiv {
+            background-color: rgb(208, 34, 150);
+        }
+        
+        #MetroDiv {
+            background-color: rgb(51, 153, 126);
+        }
+        
+        #MenuControl {
+            display: inline-block;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            var WeatherDiv = $('<div id="WeatherDiv" class="ScreenAPI">');
+            var MenuDiv = $('<div id="MenuDiv" class="ScreenAPI">');
+            var PhotoDiv = $('<div id="PhotoDiv" class="ScreenAPI">');
+            var ScrollerDiv = $('<div id="ScrollerDiv" class="ScreenAPI">');
+            var MetroDiv = $('<div id="MetroDiv" class="ScreenAPI">');
+            var ApiList = [];
+
+            DictionaryFill = function() {
+                $('.ScreenAPI').each(function() {
+                    var ScreenApiDictionary = {};
+                    ScreenApiDictionary['Name'] = $(this).attr('id');
+                    ScreenApiDictionary['Width'] = $(this).width();
+                    ScreenApiDictionary['Height'] = $(this).height();
+                    ScreenApiDictionary['Top'] = $(this).position().top;
+                    ScreenApiDictionary['Left'] = $(this).position().left; //position of top left corner of div
+                    ApiList.push(ScreenApiDictionary);
+                });
+            }
+
+            CreateAPI = function(api, div) {
+                api.change(function() {
+                    if (api.prop('checked')) {
+                        $('#container').append(div)
+                        div.draggable({
+                            containment: '#container'
+                        }).resizable({
+                            containment: '#container'
+                        });
+                    } else {
+                        div.remove();
+                    }
+                });
+            };
+            CreateAPI($('#WeatherAPI'), WeatherDiv);
+            CreateAPI($('#MenuAPI'), MenuDiv);
+            CreateAPI($('#PhotoAPI'), PhotoDiv);
+            CreateAPI($('#MetroAPI'), MetroDiv);
+            CreateAPI($('#ScrollerAPI'), ScrollerDiv);
+
+            $('#SaveScreen').click(function() {
+                DictionaryFill();
+                console.log(ApiList);
+                ApiList = [];
+
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="MenuControlContainer">
+        <form id="MenuControl">
+            <input type="checkbox" id="WeatherAPI" class="ApiSelection" value="Weather">
+            <label for="WeatherAPI">Weather</label>
+            <input type="checkbox" id="MenuAPI" class="ApiSelection" value="Menu">
+            <label for="MenuAPI">Menu</label>
+            <input type="checkbox" id="PhotoAPI" class="ApiSelection" value="Photos">
+            <label for="PhotoAPI">Photos</label>
+            <input type="checkbox" id="ScrollerAPI" class="ApiSelection" value="Text Scroller">
+            <label for="ScrollerAPI">Text Scroller</label>
+            <input type="checkbox" id="MetroAPI" class="ApiSelection" value="Metro">
+            <label for="MetroAPI">Bus/Train</label>
+            <input type="button" id="SaveScreen" class="ApiSelection" value="Save Screen">
+        </form>
+    </div>
+    <div id="container">
+    </div>
+</body>
+
+</html>
